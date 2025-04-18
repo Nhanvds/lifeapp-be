@@ -8,4 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Builder
 public class UserRequest {
+    private String email;
+    private String password;
+    private String verificationCode;
 }
