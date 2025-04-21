@@ -1,14 +1,14 @@
 package com.mad.lifeapp.controller;
 
+import com.mad.lifeapp.dto.request.VerificationCodeRequest;
 import com.mad.lifeapp.exception.InvalidException;
+import com.mad.lifeapp.exception.NotFoundException;
+import com.mad.lifeapp.exception.ParserTokenException;
 import com.mad.lifeapp.service.VerificationCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/verifications")
@@ -17,10 +17,20 @@ public class VerificationCodeController {
 
     private final VerificationCodeService verificationCodeService;
 
-    @PostMapping("/send")
-    public ResponseEntity<?> sendVerificationCode(@RequestBody String email) throws InvalidException {
-        verificationCodeService.createVerification(email);
+    @PostMapping("/register/send")
+    public ResponseEntity<?> sendRegistrationVerificationCode(@RequestBody String email) throws InvalidException {
+        verificationCodeService.createVerification(email, true);
         return new ResponseEntity<>("Successfully", HttpStatus.OK);
     }
 
+    @PostMapping("/forget-password/send")
+    public ResponseEntity<?> sendForgetPasswordVerificationCode(@RequestBody String email) throws InvalidException {
+        verificationCodeService.createVerification(email, false);
+        return new ResponseEntity<>("Successfully", HttpStatus.OK);
+    }
+
+    @PostMapping("/verify-forget-password")
+    public ResponseEntity<?> verifyCode(@RequestHeader("Authorization") String token, @RequestBody VerificationCodeRequest verificationCodeRequest) throws InvalidException, NotFoundException, ParserTokenException {
+        return ResponseEntity.ok().body(verificationCodeService.verifyForgetPassword(token, verificationCodeRequest));
+    }
 }

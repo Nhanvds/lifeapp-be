@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "verification_codes")
 public class VerificationCodeEntity extends BaseEntity{
-
+    @Column(name = "code")
     private String code;
 
     @Column(name = "email", unique = true)

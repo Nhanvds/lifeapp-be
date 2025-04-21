@@ -1,5 +1,6 @@
 package com.mad.lifeapp.entity;
 
+import com.mad.lifeapp.enums.ActivityLevelEnum;
 import com.mad.lifeapp.enums.GoalEnum;
 import com.mad.lifeapp.enums.UserGenderEnum;
 import jakarta.persistence.*;
@@ -33,6 +34,10 @@ public class UserHealthProfileEntity extends BaseEntity{
 
     @Column(name = "daily_calories_goal")
     private Float dailyCaloriesGoal;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "activity_level")
+    private ActivityLevelEnum activityLevel;
 
     @ManyToOne
     @JoinColumn(name = "user_id")
