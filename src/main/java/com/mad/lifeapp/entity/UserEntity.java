@@ -5,6 +5,7 @@ import com.mad.lifeapp.enums.UserStatusEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.Set;
 
 @AllArgsConstructor
@@ -50,5 +51,8 @@ public class UserEntity extends BaseEntity{
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<UserHealthProfileEntity> userHealthProfiles;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DailyMenuEntity> dailyMenus;
 
 }

@@ -6,6 +6,9 @@ import com.mad.lifeapp.enums.UserGenderEnum;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+import java.util.Set;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -42,4 +45,7 @@ public class UserHealthProfileEntity extends BaseEntity{
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @OneToMany(mappedBy = "userHealthProfiles", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DailySuggestionEntity> dailySuggestions;
 }
