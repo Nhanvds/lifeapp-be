@@ -17,8 +17,12 @@ public class IngredientsEntity extends BaseEntity{
     @Column(name = "name", nullable = false)
     private String name;
 
-    @Column(name = "image_url", nullable = false)
+    @Column(name = "image_url")
     private String imageUrl;
+
+    @Column(name = "gram")
+    private Float gram;
+
 
     @OneToMany(mappedBy = "ingredient",cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<FoodIngredientEntity> foodIngredients;

@@ -25,7 +25,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.POST,"/users/send").permitAll()
+                        request
+//                                .requestMatchers(HttpMethod.POST,"/users/send").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/users/refresh-token").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/users/login").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/users/register").permitAll()

@@ -9,8 +9,7 @@ import java.util.Set;
 
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 @Builder
 @Entity
 @Table(name = "foods")
@@ -23,10 +22,10 @@ public class FoodEntity extends BaseEntity {
     private String description;
 
     @Column(name = "cooking_time",nullable = false)
-    private Float cookingTime;
+    private Integer cookingTime;
 
     @Column(name = "level",nullable = false)
-    private Float level;
+    private String level;
 
     @Column(name = "image_url")
     private String imageUrl;
@@ -41,11 +40,11 @@ public class FoodEntity extends BaseEntity {
     private Float carbs;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "category")
+    @Column(name = "category", nullable = false)
     private CategoryEnum category;
 
-    @Column(name = "created_by")
-    private Integer createdBy;
+    @Column(name = "created_by", nullable = false)
+    private Long createdBy;
 
     @OneToMany(mappedBy = "food",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<NoteFoodEntity> noteFoods;
