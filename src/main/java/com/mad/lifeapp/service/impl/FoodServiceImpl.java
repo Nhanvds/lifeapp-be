@@ -7,6 +7,7 @@ import com.mad.lifeapp.dto.response.IngredientRes;
 import com.mad.lifeapp.entity.FoodEntity;
 import com.mad.lifeapp.entity.FoodIngredientEntity;
 import com.mad.lifeapp.entity.IngredientsEntity;
+import com.mad.lifeapp.enums.CategoryEnum;
 import com.mad.lifeapp.exception.InvalidException;
 import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.mapper.FoodMapper;
@@ -116,7 +117,7 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public Page<FoodResponse> getFoodCategorys(String category, Pageable pageable) {
+    public Page<FoodResponse> getFoodCategorys(CategoryEnum category, Pageable pageable) {
 
         Page<FoodEntity> foodEntityPage = foodReponsitory.findByCategory(category, pageable);
         Page<FoodResponse> foodResponses = foodEntityPage.map(foodMapper :: toFoodResponse);

@@ -3,6 +3,7 @@ package com.mad.lifeapp.controller;
 
 import com.mad.lifeapp.dto.request.FoodRequest;
 import com.mad.lifeapp.dto.response.FoodResponse;
+import com.mad.lifeapp.enums.CategoryEnum;
 import com.mad.lifeapp.exception.InvalidException;
 import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.service.FileService;
@@ -33,7 +34,9 @@ public class FoodController {
 
     @GetMapping("/foodCategory")
     public ResponseEntity<?> getFoodCategory(@RequestParam(name = "category") String category, Pageable pageable){
-        return ResponseEntity.ok().body(foodService.getFoodCategorys(category,pageable));
+
+        CategoryEnum categoryEnum = CategoryEnum.valueOf(category);
+        return ResponseEntity.ok().body(foodService.getFoodCategorys(categoryEnum,pageable));
     }
 
     @PostMapping("/add-food")
