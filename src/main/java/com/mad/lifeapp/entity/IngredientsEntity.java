@@ -20,8 +20,8 @@ public class IngredientsEntity extends BaseEntity{
     @Column(name = "image_url")
     private String imageUrl;
 
-    @Column(name = "gram")
-    private Float gram;
+//    @Column(name = "gram")
+//    private Float gram;
 
 
     @OneToMany(mappedBy = "ingredient",cascade = CascadeType.ALL, fetch = FetchType.LAZY)

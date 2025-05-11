@@ -3,22 +3,17 @@ package com.mad.lifeapp.controller;
 
 import com.mad.lifeapp.dto.request.FoodRequest;
 import com.mad.lifeapp.dto.response.FoodResponse;
-import com.mad.lifeapp.entity.FoodEntity;
 import com.mad.lifeapp.exception.InvalidException;
 import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.service.FileService;
 import com.mad.lifeapp.service.FoodService;
-import com.mad.lifeapp.service.UserService;
-import com.mad.lifeapp.service.impl.FileServiceImpl;
-import com.mad.lifeapp.service.impl.FoodServiceImpl;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.java.Log;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -36,12 +31,17 @@ public class FoodController {
         return ResponseEntity.ok().body(food);
     }
 
+    @GetMapping("/foodCategory")
+    public ResponseEntity<?> getFoodCategory(@RequestParam(name = "category") String category, Pageable pageable){
+        return ResponseEntity.ok().body(foodService.getFoodCategorys(category,pageable));
+    }
+
     @PostMapping("/add-food")
-    public ResponseEntity<?> addFodd (@RequestBody FoodRequest foodRequest) throws InvalidException {
-//        log.info("Name : ", foodRequest.getName());
-        log.info(foodRequest.toString());
-//        Boolean checkAdd = foodService.addFood(foodRequest);
-        return ResponseEntity.ok().body("Thanh cong");
+    public ResponseEntity<Boolean> addFodd (@RequestBody FoodRequest foodRequest) throws InvalidException {
+////        log.info("Name : ", foodRequest.getName());
+//        log.info(foodRequest.toString() + null);
+        Boolean checkAdd = foodService.addFood(foodRequest);
+        return ResponseEntity.ok().body(checkAdd);
     }
 
     @GetMapping("/foods")
@@ -50,11 +50,11 @@ public class FoodController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<String> uploadImage(@RequestParam("image") MultipartFile image) {
+    public ResponseEntity<String> uploadImage(@RequestParam("files") List<MultipartFile> images) {
 
-        List<MultipartFile> multipartFiles = new ArrayList<>();
-        multipartFiles.add(image);
-        List<String> urls = fileService.uploadFiles(multipartFiles);
+//        List<MultipartFile> multipartFiles = new ArrayList<>();
+//        multipartFiles.add(image);
+        List<String> urls = fileService.uploadFiles(images);
         System.out.println(urls.get(0));
         return ResponseEntity.ok().body("Thanh cong");
     }

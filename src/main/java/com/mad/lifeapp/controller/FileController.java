@@ -16,7 +16,7 @@ public class FileController {
 
 
     @PostMapping("/upload")
-    public ResponseEntity<?> uploadImages(
+    public ResponseEntity<List<String>> uploadImages(
             @RequestParam("files") List<MultipartFile> files) {
         return ResponseEntity.ok().body(fileService.uploadFiles(files));
     }

@@ -1,7 +1,6 @@
 package com.mad.lifeapp.dto.response;
 
-import com.mad.lifeapp.dto.IngredientDTO;
-import com.mad.lifeapp.entity.IngredientsEntity;
+import com.mad.lifeapp.dto.request.IngredientReq;
 import com.mad.lifeapp.enums.CategoryEnum;
 import lombok.Builder;
 import lombok.Data;
@@ -22,5 +21,5 @@ public class FoodResponse {
     private Float carbs;
     private CategoryEnum category;
     private Long createdBy;
-    private Set<IngredientDTO> ingredients;
+    private Set<IngredientRes> ingredients;
 }
