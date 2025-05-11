@@ -52,8 +52,8 @@ public class FoodEntity extends BaseEntity {
     @OneToMany(mappedBy = "food",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<FoodIngredientEntity> foodIngredients;
 
-    @OneToMany(mappedBy = "food",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private Set<DailyMenuEntity> dailyMenus;
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Set<DailyMenuFoodEntity> dailyMenuFoods;
 
     @OneToMany(mappedBy = "food",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private Set<DailySuggestionFoodEntity> dailySuggestionFoods;
