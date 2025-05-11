@@ -12,8 +12,12 @@ import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
@@ -23,17 +27,19 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
+        http.cors().and()
+                .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(request ->
-                        request.requestMatchers(HttpMethod.POST,"/users/send").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/users/refresh-token").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/users/login").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/users/register").permitAll()
-                                .requestMatchers(HttpMethod.POST,"/users/verification").permitAll()
-                                .requestMatchers(HttpMethod.GET,"/users/*/email").permitAll()
-                                .requestMatchers(HttpMethod.PUT,"/users/*/update-password").permitAll()
-                                .requestMatchers(HttpMethod.POST,"verifications/send").permitAll()
-                                .anyRequest().authenticated());
+                        request.requestMatchers(HttpMethod.POST, "/users/send").permitAll()
+//                                .requestMatchers(HttpMethod.POST,"/users/refresh-token").permitAll()
+//                                .requestMatchers(HttpMethod.POST,"/users/login").permitAll()
+//                                .requestMatchers(HttpMethod.POST,"/users/register").permitAll()
+//                                .requestMatchers(HttpMethod.POST,"/users/verification").permitAll()
+//                                .requestMatchers(HttpMethod.GET,"/users/*/email").permitAll()
+//                                .requestMatchers(HttpMethod.PUT,"/users/*/update-password").permitAll()
+//                                .requestMatchers(HttpMethod.POST,"verifications/send").permitAll()
+//                                .anyRequest().authenticated());
+                                .anyRequest().permitAll());
         http.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));
         return http.build();
@@ -51,6 +57,19 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(10);
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOriginPatterns(Collections.singletonList("*")); // 👈 cho tất cả origin
+        config.setAllowedMethods(Collections.singletonList("*"));         // GET, POST, PUT, DELETE...
+        config.setAllowedHeaders(Collections.singletonList("*"));         // tất cả header
+        config.setAllowCredentials(false); // 👈 để true nếu muốn gửi cookie (và dùng origin cụ thể)
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }
 

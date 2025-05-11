@@ -11,4 +11,7 @@ public class UserRequest {
     private String email;
     private String password;
     private String verificationCode;
+    private String imageUrl;
+    private String country;
+    private String username;
 }

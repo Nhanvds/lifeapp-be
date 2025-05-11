@@ -10,11 +10,19 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
 
-
+    @ExceptionHandler(InvalidException.class)
+    public ResponseEntity<?> handleInvalidException(InvalidException exception){
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<?> handleNotFoundException(NotFoundException exception){
+        return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
+    }
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<?> handleUserNotFoundException(UserNotFoundException exception){
         return new ResponseEntity<>(exception.getMessage(),HttpStatus.NOT_FOUND);
