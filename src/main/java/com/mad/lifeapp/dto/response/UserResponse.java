@@ -18,4 +18,5 @@ public class UserResponse {
     private UserStatusEnum status;
     private UserRoleEnum role;
     private String googleId;
+    private String imageUrl;
 }
