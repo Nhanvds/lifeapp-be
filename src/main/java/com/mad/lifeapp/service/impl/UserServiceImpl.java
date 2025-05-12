@@ -9,10 +9,7 @@ import com.mad.lifeapp.entity.UserEntity;
 import com.mad.lifeapp.entity.VerificationCodeEntity;
 import com.mad.lifeapp.enums.UserRoleEnum;
 import com.mad.lifeapp.enums.UserStatusEnum;
-import com.mad.lifeapp.exception.InvalidCredentialsException;
-import com.mad.lifeapp.exception.InvalidException;
-import com.mad.lifeapp.exception.NotFoundException;
-import com.mad.lifeapp.exception.ParserTokenException;
+import com.mad.lifeapp.exception.*;
 import com.mad.lifeapp.mapper.UserMapper;
 import com.mad.lifeapp.repository.UserRepository;
 import com.mad.lifeapp.repository.VerificationCodeRepository;
@@ -72,10 +69,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUserInfo(String token, UserRequest userRequest) throws ParserTokenException {
+    public UserResponse updateUserInfo(String token, UserRequest userRequest) throws ParserTokenException, UserNotFoundException {
         Long userId = jwtUtils.getUserId(token);
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setCountry(userRequest.getCountry());
         user.setFullname(userRequest.getUsername());
         user.setImageUrl(userRequest.getImageUrl());
@@ -84,10 +81,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean changePassword(PasswordRequest passwordRequest, String token) throws ParserTokenException {
+    public boolean changePassword(PasswordRequest passwordRequest, String token) throws ParserTokenException, UserNotFoundException {
         Long userId = jwtUtils.getUserId(token);
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         // user.getPassword null khi đăng nhập với tài khoản google và chưa cài mật khẩu
         if (user.getPassword() == null || passwordEncoder.matches(passwordRequest.getCurrentPassword(), user.getPassword())) {
             user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
@@ -98,12 +95,20 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean resetPassword(String token, PasswordRequest passwordRequest) throws ParserTokenException {
+    public boolean resetPassword(String token, PasswordRequest passwordRequest) throws ParserTokenException, UserNotFoundException {
         Long userId = jwtUtils.getUserId(token);
         UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         user.setPassword(passwordEncoder.encode(passwordRequest.getNewPassword()));
         userRepository.save(user);
         return true;
+    }
+
+    @Override
+    public UserResponse getUser(String token) throws ParserTokenException {
+        Long userId = jwtUtils.getUserId(token);
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return userMapper.toResponse(user);
     }
 }
