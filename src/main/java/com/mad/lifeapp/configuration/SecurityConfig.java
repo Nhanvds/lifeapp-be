@@ -28,9 +28,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.cors().and()
+//        http
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(request ->
+//<<<<<<< HEAD
+//                        request
+////                                .requestMatchers(HttpMethod.POST,"/users/send").permitAll()
+//=======
                         request.requestMatchers(HttpMethod.POST, "/users/send").permitAll()
+//>>>>>>> 46f3c20343326addbd63e8ab1f8b495f29ea5ce5
 //                                .requestMatchers(HttpMethod.POST,"/users/refresh-token").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/users/login").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/users/register").permitAll()

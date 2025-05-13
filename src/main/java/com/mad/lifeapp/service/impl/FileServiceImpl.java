@@ -14,7 +14,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class FileServiceImpl implements FileService {
-    private final CloudinaryConfig cloudinaryConfig;
+    private final CloudinaryConfig  cloudinaryConfig;
 
     @Override
     public List<String> uploadFiles(List<MultipartFile> files) {
