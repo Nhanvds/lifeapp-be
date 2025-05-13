@@ -22,7 +22,7 @@ public class DailyMenuEntity extends BaseEntity{
     @Column(name = "day")
     private LocalDate day;
 
-    @OneToMany(mappedBy ="dailyMenuEntity",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy ="dailyMenuEntity",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     private Set<DailyMenuFoodEntity> dailyMenuFoods;
 
     @ManyToOne

@@ -12,7 +12,7 @@ import lombok.*;
 @Entity
 @Table(name = "daily_menu_foods")
 public class DailyMenuFoodEntity extends BaseEntity{
-    @Column(name = "categoy")
+    @Column(name = "category")
     private String category;
 
     @ManyToOne
