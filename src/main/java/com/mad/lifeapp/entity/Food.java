@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 @Entity
@@ -13,7 +15,32 @@ public class Food {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private float protein;
-    private float carbs;
-    private float fat;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+    private Float carbs;
+
+    private String category;
+
+    @Column(name = "cooking_time")
+    private Integer cookingTime;
+
+    @Column(name = "created_by")
+    private Long createdBy;
+
+    private String description;
+
+    private Float fat;
+
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    private String level;
+
+    private String name;
+
+    private Float protein;
 }

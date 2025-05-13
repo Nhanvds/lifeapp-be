@@ -34,6 +34,9 @@ public class UserHealthProfile {
 
     private Float weight;
 
+    @Column(name = "user_id")
+    private Long userId;
+
     // Getters and Setters
     public Long getId() {
         return id;

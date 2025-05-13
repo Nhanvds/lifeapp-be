@@ -15,7 +15,21 @@ public class DailyMenuFood {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "created_at")
     private LocalDate createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDate updatedAt;
+
+    private String category;
+
+    @Column(name = "daily_menu_id")
+    private Long dailyMenuId;
+
+    @ManyToOne
+    @JoinColumn(name = "daily_menu_id", insertable = false, updatable = false)
+    private DailyMenu dailyMenu;
 
     @ManyToOne
     @JoinColumn(name = "food_id")
