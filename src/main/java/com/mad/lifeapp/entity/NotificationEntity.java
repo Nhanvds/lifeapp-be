@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -15,13 +16,13 @@ import java.time.LocalDateTime;
 public class NotificationEntity extends BaseEntity{
 
     @Column(name = "breakfast_time")
-    private LocalDateTime breakfastTime;
+    private LocalTime breakfastTime;
 
     @Column(name = "lunch_time")
-    private LocalDateTime lunchTime;
+    private LocalTime lunchTime;
 
     @Column(name = "dinner_time")
-    private LocalDateTime dinnerTime;
+    private LocalTime dinnerTime;
 
     @OneToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")

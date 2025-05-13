@@ -19,6 +19,7 @@ public class UserHealthProfileController {
     /**
      * Tạo mới nếu chưa tồn tại bản ghi trong ngày
      * Cập nhật nếu đã tồn tại một bản ghi trong ngày
+     * Tạo mới bảng thông báo nếu người dùng chưa có bảng thông báo
      */
     @PostMapping("/create")
     public ResponseEntity<UserHealthProfileResponse> createUserHealthProfile(
