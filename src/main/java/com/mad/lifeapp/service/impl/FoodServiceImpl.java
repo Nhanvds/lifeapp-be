@@ -2,11 +2,13 @@ package com.mad.lifeapp.service.impl;
 
 import com.mad.lifeapp.dto.request.IngredientReq;
 import com.mad.lifeapp.dto.request.FoodRequest;
+import com.mad.lifeapp.dto.response.FoodCategory;
 import com.mad.lifeapp.dto.response.FoodResponse;
 import com.mad.lifeapp.dto.response.IngredientRes;
 import com.mad.lifeapp.entity.FoodEntity;
 import com.mad.lifeapp.entity.FoodIngredientEntity;
 import com.mad.lifeapp.entity.IngredientsEntity;
+import com.mad.lifeapp.enums.CategoryEnum;
 import com.mad.lifeapp.exception.InvalidException;
 import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.mapper.FoodMapper;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -116,11 +119,68 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public Page<FoodResponse> getFoodCategorys(String category, Pageable pageable) {
+    public FoodCategory getFoodCategorys(CategoryEnum category, Pageable pageable) {
 
-        Page<FoodEntity> foodEntityPage = foodReponsitory.findByCategory(category, pageable);
-        Page<FoodResponse> foodResponses = foodEntityPage.map(foodMapper :: toFoodResponse);
+        Page<FoodEntity> foodEntityPage;
 
-        return foodResponses;
+        if(category == CategoryEnum.All) {
+            foodEntityPage = foodReponsitory.findAllFood("", pageable);
+        }
+        else {
+            foodEntityPage = foodReponsitory.findByCategory(category, pageable);
+        }
+        Page<FoodResponse> foodResponsePage = foodEntityPage.map(foodMapper::toFoodResponse);
+        FoodCategory foodCategory = FoodCategory.builder()
+                .foodResponses(foodResponsePage.getContent().stream().collect(Collectors.toSet()))
+                .pageNumber(foodResponsePage.getPageable().getPageNumber())
+                .totalPages(foodResponsePage.getTotalPages())
+                .build();
+
+        return foodCategory;
+
+    }
+
+    @Override
+    public FoodCategory findFood(String nameFood, CategoryEnum category,Integer checkOptionTime, Integer time, Integer typeCalo, Pageable pageable) {
+        Page<FoodEntity> foodEntityPage;
+        Integer startCalo = 0;
+        Integer endCalo = Integer.MAX_VALUE;
+
+        switch (typeCalo){
+            case 1: {
+                startCalo = 0;
+                endCalo = 500;
+                break;
+            }
+            case 2: {
+                startCalo = 500;
+                endCalo = 1000;
+                break;
+            }
+            case 3: {
+                startCalo = 1000;
+                endCalo = 2000;
+                break;
+            }
+            case 4: {
+                startCalo = 2000;
+                endCalo = 10000;
+                break;
+            }
+
+        }
+
+
+        if(checkOptionTime == 1) foodEntityPage = foodReponsitory.findNameTime(nameFood, time, startCalo, endCalo,  pageable);
+        else foodEntityPage = foodReponsitory.findNameNoTime(nameFood, startCalo, endCalo,  pageable);
+
+        Page<FoodResponse> foodResponsePage = foodEntityPage.map(foodMapper::toFoodResponse);
+        FoodCategory foodCategory = FoodCategory.builder()
+                .foodResponses(foodResponsePage.getContent().stream().collect(Collectors.toSet()))
+                .pageNumber(foodResponsePage.getPageable().getPageNumber())
+                .totalPages(foodResponsePage.getTotalPages())
+                .build();
+
+        return foodCategory;
     }
 }

@@ -2,7 +2,9 @@ package com.mad.lifeapp.controller;
 
 
 import com.mad.lifeapp.dto.request.FoodRequest;
+import com.mad.lifeapp.dto.response.FoodCategory;
 import com.mad.lifeapp.dto.response.FoodResponse;
+import com.mad.lifeapp.enums.CategoryEnum;
 import com.mad.lifeapp.exception.InvalidException;
 import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.service.FileService;
@@ -31,9 +33,24 @@ public class FoodController {
         return ResponseEntity.ok().body(food);
     }
 
-    @GetMapping("/foodCategory")
-    public ResponseEntity<?> getFoodCategory(@RequestParam(name = "category") String category, Pageable pageable){
-        return ResponseEntity.ok().body(foodService.getFoodCategorys(category,pageable));
+    @GetMapping("/food-category")
+    public ResponseEntity<FoodCategory> getFoodCategory(@RequestParam(name = "category") String category, Pageable pageable){
+
+        CategoryEnum categoryEnum = CategoryEnum.valueOf(category);
+        return ResponseEntity.ok().body(foodService.getFoodCategorys(categoryEnum,pageable));
+    }
+
+    @GetMapping("/find-food")
+    public ResponseEntity<FoodCategory> findFood(@RequestParam(name = "nameFood") String nameFood,
+                                                 @RequestParam(name = "nameCategory") String nameCategory,
+                                                 @RequestParam(name = "checkOptionTime") Integer checkOptionTime,
+                                                 @RequestParam(name = "time") Integer time,
+                                                 @RequestParam(name = "calo") Integer typeCalo,
+                                                 Pageable pageable
+                                                       ){
+        CategoryEnum categoryEnum = CategoryEnum.valueOf(nameCategory);
+        return ResponseEntity.ok().body(foodService.findFood(nameFood, categoryEnum, checkOptionTime, time, typeCalo, pageable ));
+
     }
 
     @PostMapping("/add-food")
@@ -58,5 +75,6 @@ public class FoodController {
         System.out.println(urls.get(0));
         return ResponseEntity.ok().body("Thanh cong");
     }
+
 
 }

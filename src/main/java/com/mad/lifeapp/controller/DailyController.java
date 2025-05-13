@@ -24,12 +24,12 @@ public class DailyController {
         return ResponseEntity.ok().body(dailyService.getDailyMenuFoodRes(localDate, 3L));
     }
 
-    @PostMapping("/addFoodDaily")
+    @PostMapping("/add-food-daily")
     ResponseEntity<Boolean> addFoodDaily(@RequestParam("dailyId") Long dailyId, @RequestParam("foodId") Long foodId,@RequestParam("nameCategory")String nameCategory ){
         return ResponseEntity.ok().body(dailyService.addDailyMenuFood(dailyId, foodId, nameCategory));
     }
 
-    @PostMapping("/deleteFoodDaily")
+    @PostMapping("/delete-food-daily")
     ResponseEntity<Boolean> updateDaily(@RequestBody List<Long> idFoods, @RequestParam String note, @RequestParam Long id){
         return ResponseEntity.ok().body(dailyService.updateDaily(idFoods, note, id));
     }
