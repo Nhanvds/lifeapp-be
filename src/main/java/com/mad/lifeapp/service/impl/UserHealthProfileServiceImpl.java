@@ -52,7 +52,7 @@ public class UserHealthProfileServiceImpl implements UserHealthProfileService {
                 .age(userHealthProfileEntity.getAge())
                 .gender(userHealthProfileEntity.getGender())
                 .goal(userHealthProfileEntity.getGoal())
-                .height(userHealthProfileRequest.getHeight())
+                .height(userHealthProfileEntity.getHeight())
                 .weight(userHealthProfileEntity.getWeight())
                 .activityLevel(userHealthProfileEntity.getActivityLevel())
                 .dailyCaloriesGoal(userHealthProfileEntity.getDailyCaloriesGoal())

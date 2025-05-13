@@ -2,6 +2,7 @@ package com.mad.lifeapp.service.impl;
 
 import com.mad.lifeapp.component.JwtUtils;
 import com.mad.lifeapp.dto.request.VerificationCodeRequest;
+import com.mad.lifeapp.dto.response.TokenResponse;
 import com.mad.lifeapp.entity.UserEntity;
 import com.mad.lifeapp.entity.VerificationCodeEntity;
 import com.mad.lifeapp.exception.InvalidCredentialsException;
@@ -12,6 +13,7 @@ import com.mad.lifeapp.repository.UserRepository;
 import com.mad.lifeapp.repository.VerificationCodeRepository;
 import com.mad.lifeapp.service.EmailService;
 import com.mad.lifeapp.service.VerificationCodeService;
+import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -58,19 +60,17 @@ public class VerificationCodeServiceImpl implements VerificationCodeService {
     }
 
     @Override
-    public boolean verifyForgetPassword(String token, VerificationCodeRequest verificationCodeRequest) throws ParserTokenException, InvalidException, NotFoundException {
-        Long userId = jwtUtils.getUserId(token);
-        UserEntity user = userRepository.findById(userId)
+    public TokenResponse verifyForgetPassword(VerificationCodeRequest verificationCodeRequest) throws InvalidException, NotFoundException, JOSEException {
+        UserEntity user = userRepository.findByEmail(verificationCodeRequest.getEmail())
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        if (!user.getEmail().equals(verificationCodeRequest.getEmail())) {
-            throw new InvalidException("Email invalid");
-        }
         VerificationCodeEntity verificationCodeEntity = verificationCodeRepository.findByEmail(verificationCodeRequest.getEmail())
                 .orElseThrow(() -> new NotFoundException("Verification code not found"));
         if (!verificationCodeEntity.getCode().equals(verificationCodeRequest.getCode())
                 || verificationCodeEntity.getExpiredAt().isBefore(LocalDateTime.now())) {
             throw new InvalidException("Verification code invalid");
         }
-        return true;
+        return TokenResponse.builder()
+                .token(jwtUtils.generateToken(user))
+                .build();
     }
 }

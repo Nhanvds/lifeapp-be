@@ -1,10 +1,12 @@
 package com.mad.lifeapp.controller;
 
 import com.mad.lifeapp.dto.request.VerificationCodeRequest;
+import com.mad.lifeapp.dto.response.TokenResponse;
 import com.mad.lifeapp.exception.InvalidException;
 import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.exception.ParserTokenException;
 import com.mad.lifeapp.service.VerificationCodeService;
+import com.nimbusds.jose.JOSEException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -33,7 +35,8 @@ public class VerificationCodeController {
     }
 
     @PostMapping("/verify-forget-password")
-    public ResponseEntity<?> verifyCode(@RequestHeader("Authorization") String token, @RequestBody VerificationCodeRequest verificationCodeRequest) throws InvalidException, NotFoundException, ParserTokenException {
-        return ResponseEntity.ok().body(verificationCodeService.verifyForgetPassword(token, verificationCodeRequest));
+    public ResponseEntity<TokenResponse> verifyCode(@RequestBody VerificationCodeRequest verificationCodeRequest) throws InvalidException, NotFoundException, ParserTokenException, JOSEException {
+        return ResponseEntity.ok().body(verificationCodeService.verifyForgetPassword(verificationCodeRequest));
     }
+
 }
