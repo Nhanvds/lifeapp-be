@@ -2,6 +2,8 @@ package com.mad.lifeapp.repository;
 
 import com.mad.lifeapp.entity.DailyMenuEntity;
 import com.mad.lifeapp.entity.DailyMenuFoodEntity;
+import com.mad.lifeapp.entity.UserEntity;
+import org.apache.catalina.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -20,4 +22,6 @@ public interface DailyReponsitory extends JpaRepository<DailyMenuEntity, Long> {
 
     @Query("select daily from DailyMenuEntity as daily where daily.day = :day ")
     DailyMenuEntity findByDay(LocalDate day);
+
+    DailyMenuEntity findByUserAndDay(UserEntity user, LocalDate day);
 }

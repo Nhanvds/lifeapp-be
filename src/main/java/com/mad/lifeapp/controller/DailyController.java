@@ -6,6 +6,8 @@ import com.mad.lifeapp.service.DailyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -20,8 +22,9 @@ public class DailyController {
     private final DailyService dailyService;
 
     @GetMapping("/daily")
-    ResponseEntity<DailyRes> getDaily(@RequestParam("localDate") LocalDate localDate){
-        return ResponseEntity.ok().body(dailyService.getDailyMenuFoodRes(localDate, 3L));
+    ResponseEntity<DailyRes> getDaily(@RequestParam("localDate") LocalDate localDate, @RequestHeader("Authorization")String token){
+
+        return ResponseEntity.ok().body(dailyService.getDailyMenuFoodRes(localDate, token));
     }
 
     @PostMapping("/add-food-daily")

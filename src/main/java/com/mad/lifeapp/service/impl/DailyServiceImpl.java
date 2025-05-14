@@ -1,5 +1,6 @@
 package com.mad.lifeapp.service.impl;
 
+import com.mad.lifeapp.component.JwtUtils;
 import com.mad.lifeapp.dto.response.DailyMenuFoodRes;
 import com.mad.lifeapp.dto.response.DailyRes;
 import com.mad.lifeapp.dto.response.FoodResponse;
@@ -14,6 +15,7 @@ import com.mad.lifeapp.repository.FoodReponsitory;
 import com.mad.lifeapp.repository.UserRepository;
 import com.mad.lifeapp.service.DailyService;
 import lombok.RequiredArgsConstructor;
+import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -23,6 +25,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class DailyServiceImpl implements DailyService {
 
+    public final JwtUtils jwtUtils;
     public final DailyReponsitory dailyReponsitory;
     public final UserRepository userRepository;
     public final FoodReponsitory foodReponsitory;
@@ -30,9 +33,20 @@ public class DailyServiceImpl implements DailyService {
     public final FoodMapper foodMapper;
     public final IngredientMapper ingredientMapper;
     @Override
-    public DailyRes getDailyMenuFoodRes(LocalDate localDate, Long idUser) {
-        DailyMenuEntity dailyMenuEntity = dailyReponsitory.findByDay(localDate);
+    public DailyRes getDailyMenuFoodRes(LocalDate localDate, String token) {
+        Long idUser = 0L;
+        UserEntity user = new UserEntity();
+        DailyMenuEntity dailyMenuEntity = new DailyMenuEntity();
+        try {
+            idUser = jwtUtils.getUserId(token);
+            user = userRepository.findById(idUser).get();
+
+        }
+        catch (Exception e){
+            throw new RuntimeException("Loi lay id or getUser or getDaily khong dung trong getDailyMenuFoodRes");
+        }
         DailyRes dailyRes = DailyRes.builder().build();
+        dailyMenuEntity = dailyReponsitory.findByUserAndDay(user, localDate);
 
         if(Objects.isNull(dailyMenuEntity)){
             dailyMenuEntity = dailyReponsitory.save(DailyMenuEntity.builder()

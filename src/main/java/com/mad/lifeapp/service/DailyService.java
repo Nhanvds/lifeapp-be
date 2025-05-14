@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface DailyService {
-    DailyRes getDailyMenuFoodRes(LocalDate localDate, Long idUser);
+    DailyRes getDailyMenuFoodRes(LocalDate localDate, String token);
 
     Boolean addDailyMenuFood(Long dailyId, Long foodId, String nameCategory );
 
