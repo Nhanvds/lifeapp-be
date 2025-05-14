@@ -1,6 +1,8 @@
 package com.mad.lifeapp.controller;
 
 
+import com.google.firebase.auth.FirebaseAuthException;
+import com.mad.lifeapp.dto.request.FirebaseTokenRequest;
 import com.mad.lifeapp.dto.request.PasswordRequest;
 import com.mad.lifeapp.dto.request.UserRequest;
 import com.mad.lifeapp.dto.response.TokenResponse;
@@ -55,6 +57,11 @@ public class UserController {
     @GetMapping("/get-user")
     public ResponseEntity<UserResponse> getUser(@RequestHeader("Authorization") String token) throws ParserTokenException {
         return ResponseEntity.ok().body(userService.getUser(token));
+    }
+
+    @PostMapping("/login-firebase")
+    public ResponseEntity<TokenResponse> loginWithFirebase(@RequestBody FirebaseTokenRequest firebaseTokenRequest) throws FirebaseAuthException, JOSEException {
+        return ResponseEntity.ok().body(userService.loginWithFirebase(firebaseTokenRequest));
     }
 
 }
