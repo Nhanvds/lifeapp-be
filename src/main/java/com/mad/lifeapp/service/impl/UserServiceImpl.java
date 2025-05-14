@@ -1,6 +1,10 @@
 package com.mad.lifeapp.service.impl;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
+import com.google.firebase.auth.FirebaseToken;
 import com.mad.lifeapp.component.JwtUtils;
+import com.mad.lifeapp.dto.request.FirebaseTokenRequest;
 import com.mad.lifeapp.dto.request.PasswordRequest;
 import com.mad.lifeapp.dto.request.UserRequest;
 import com.mad.lifeapp.dto.response.TokenResponse;
@@ -33,6 +37,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final JwtUtils jwtUtils;
+    private final FirebaseAuth firebaseAuth;
 
     @Override
     public UserResponse register(UserRequest userRequest) throws InvalidException {
@@ -110,5 +115,22 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return userMapper.toResponse(user);
+    }
+
+    @Override
+    public TokenResponse loginWithFirebase(FirebaseTokenRequest firebaseTokenRequest) throws FirebaseAuthException, JOSEException {
+        FirebaseToken decodedToken = firebaseAuth.verifyIdToken(firebaseTokenRequest.getIdToken());
+        String email = decodedToken.getEmail();
+        UserEntity userEntity = userRepository.findByEmail(email)
+                .orElse(UserEntity.builder()
+                        .email(email)
+                        .role(UserRoleEnum.USER)
+                        .status(UserStatusEnum.INACTIVE)
+                        .build());
+        userRepository.save(userEntity);
+        String accessToken = jwtUtils.generateToken(userEntity);
+        return TokenResponse.builder()
+                .token(accessToken)
+                .build();
     }
 }
