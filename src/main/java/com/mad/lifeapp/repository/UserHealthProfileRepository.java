@@ -21,4 +21,18 @@ public interface UserHealthProfileRepository extends JpaRepository<UserHealthPro
     Optional<UserHealthProfileEntity> findLatestByUserId(@Param("userId") Long userId,
                                                          @Param("startOfDay") LocalDateTime startOfDay,
                                                          @Param("endOfDay") LocalDateTime endOfDay);
+
+
+    /**
+     *
+     * @param userId
+     * @return Bản ghi mới nhất của user
+     */
+    @Query("""
+                select u from UserHealthProfileEntity u
+                where u.user.id = :userId
+                order by u.createdAt desc
+            """)
+    Optional<UserHealthProfileEntity> findLatestByUserId(@Param("userId") Long userId);
+
 }
