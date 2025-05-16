@@ -31,11 +31,18 @@ public class SecurityConfig {
 //        http
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(request ->
+
+                                request.requestMatchers(HttpMethod.GET,
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui.html",
+                                        "/swagger-ui/**",
+                                        "/webjars/**"
+                                ).permitAll()
 //<<<<<<< HEAD
 //                        request
 ////                                .requestMatchers(HttpMethod.POST,"/users/send").permitAll()
 //=======
-                        request.requestMatchers(HttpMethod.POST, "/users/send").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/users/send").permitAll()
 //>>>>>>> 46f3c20343326addbd63e8ab1f8b495f29ea5ce5
 //                                .requestMatchers(HttpMethod.POST,"/users/refresh-token").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/users/login").permitAll()
