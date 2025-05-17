@@ -141,8 +141,12 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
-    public FoodCategory findFood(String nameFood, CategoryEnum category,Integer checkOptionTime, Integer time, Integer typeCalo, Pageable pageable) {
+    public FoodCategory findFood(String nameFood, String category,Integer checkOptionTime, Integer time, Integer typeCalo, Pageable pageable) {
         Page<FoodEntity> foodEntityPage;
+
+        category = category.substring(0,1).toUpperCase() + category.substring(1).toLowerCase();
+
+        if(category.equals("All")) category = "" ;
         Integer startCalo = 0;
         Integer endCalo = Integer.MAX_VALUE;
 
@@ -171,8 +175,8 @@ public class FoodServiceImpl implements FoodService {
         }
 
 
-        if(checkOptionTime == 1) foodEntityPage = foodReponsitory.findNameTime(nameFood, time, startCalo, endCalo,  pageable);
-        else foodEntityPage = foodReponsitory.findNameNoTime(nameFood, startCalo, endCalo,  pageable);
+        if(checkOptionTime == 1) foodEntityPage = foodReponsitory.findNameTime(nameFood, time,category, startCalo, endCalo,  pageable);
+        else foodEntityPage = foodReponsitory.findNameNoTime(nameFood, category, startCalo, endCalo,  pageable);
 
         Page<FoodResponse> foodResponsePage = foodEntityPage.map(foodMapper::toFoodResponse);
         FoodCategory foodCategory = FoodCategory.builder()

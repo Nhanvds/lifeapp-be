@@ -15,14 +15,18 @@ import com.mad.lifeapp.repository.FoodReponsitory;
 import com.mad.lifeapp.repository.UserRepository;
 import com.mad.lifeapp.service.DailyService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.*;
 
+import static java.rmi.server.LogStream.log;
+
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DailyServiceImpl implements DailyService {
 
     public final JwtUtils jwtUtils;
@@ -49,10 +53,15 @@ public class DailyServiceImpl implements DailyService {
         dailyMenuEntity = dailyReponsitory.findByUserAndDay(user, localDate);
 
         if(Objects.isNull(dailyMenuEntity)){
-            dailyMenuEntity = dailyReponsitory.save(DailyMenuEntity.builder()
-                            .user(userRepository.findById(idUser).get())
-                            .day(localDate)
-                    .build());
+            try {
+                dailyMenuEntity = dailyReponsitory.save(DailyMenuEntity.builder()
+                        .user(userRepository.findById(idUser).get())
+                        .day(localDate)
+                        .build());
+            }
+            catch (Exception e){
+                log(e.getMessage());
+            }
 
             dailyRes = DailyRes.builder()
                     .id(dailyMenuEntity.getId())
@@ -107,7 +116,12 @@ public class DailyServiceImpl implements DailyService {
     @Override
     public Boolean updateDaily(List<Long> idFoods, String note, Long id) {
         try {
-            idFoods.forEach(item -> dailyMenuFoodReponsitory.deleteById(item));
+            idFoods.forEach(item -> {
+                dailyMenuFoodReponsitory.deleteById(item);
+                System.out.println(dailyMenuFoodReponsitory.findById(item));
+
+            });
+
             DailyMenuEntity dailyMenuEntity = dailyReponsitory.findById(id).get();
             dailyMenuEntity.setNote(note);
             dailyReponsitory.save(dailyMenuEntity);

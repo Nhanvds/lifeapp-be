@@ -19,6 +19,6 @@ public interface FoodService {
     Boolean updateFood(FoodRequest foodRequest, Long id);
     Boolean deleteFood(Long id);
     Boolean addFood(FoodRequest foodRequest) throws InvalidException;
-    FoodCategory findFood(String nameFood, CategoryEnum nameCategory, Integer checkOptionTime, Integer time, Integer typeCalo, Pageable pageable);
+    FoodCategory findFood(String nameFood, String nameCategory, Integer checkOptionTime, Integer time, Integer typeCalo, Pageable pageable);
 
 }

@@ -17,13 +17,16 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
     @Value("${jwt.secret}")
     public String secretKey;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -32,11 +35,11 @@ public class SecurityConfig {
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(request ->
 //<<<<<<< HEAD
-//                        request
-////                                .requestMatchers(HttpMethod.POST,"/users/send").permitAll()
-//=======
-                        request.requestMatchers(HttpMethod.POST, "/users/send").permitAll()
-//>>>>>>> 46f3c20343326addbd63e8ab1f8b495f29ea5ce5
+                        request
+//                                .requestMatchers(HttpMethod.POST,"/users/send").permitAll()
+//////=======
+//                                .requestMatchers(HttpMethod.POST, "/verifications/register/send").permitAll()
+////>>>>>>> 46f3c20343326addbd63e8ab1f8b495f29ea5ce 5
 //                                .requestMatchers(HttpMethod.POST,"/users/refresh-token").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/users/login").permitAll()
 //                                .requestMatchers(HttpMethod.POST,"/users/register").permitAll()

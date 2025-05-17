@@ -23,7 +23,6 @@ public class DailyController {
 
     @GetMapping("/daily")
     ResponseEntity<DailyRes> getDaily(@RequestParam("localDate") LocalDate localDate, @RequestHeader("Authorization")String token){
-
         return ResponseEntity.ok().body(dailyService.getDailyMenuFoodRes(localDate, token));
     }
 

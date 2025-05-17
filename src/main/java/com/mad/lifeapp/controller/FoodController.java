@@ -9,6 +9,7 @@ import com.mad.lifeapp.exception.InvalidException;
 import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.service.FileService;
 import com.mad.lifeapp.service.FoodService;
+import com.mad.lifeapp.service.NoteFoodService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -26,7 +27,13 @@ public class FoodController {
 
     private final FoodService foodService;
     private final FileService fileService;
+    private final NoteFoodService noteFoodService;
 
+
+    @PostMapping("/addNote")
+    public ResponseEntity<Boolean> addNote(@RequestParam("idUser") Long idUser, @RequestParam("idFood") Long idFood, @RequestParam("note") String note){
+        return ResponseEntity.ok().body( noteFoodService.createNoteFood(idUser, idFood, note));
+    }
     @GetMapping("/food")
     public ResponseEntity<?> getFood(@RequestParam(name = "id")Long id) throws NotFoundException {
         FoodResponse food = foodService.getFood(id);
@@ -48,8 +55,8 @@ public class FoodController {
                                                  @RequestParam(name = "calo") Integer typeCalo,
                                                  Pageable pageable
                                                        ){
-        CategoryEnum categoryEnum = CategoryEnum.valueOf(nameCategory);
-        return ResponseEntity.ok().body(foodService.findFood(nameFood, categoryEnum, checkOptionTime, time, typeCalo, pageable ));
+//        CategoryEnum categoryEnum = CategoryEnum.valueOf(nameCategory);
+        return ResponseEntity.ok().body(foodService.findFood(nameFood, nameCategory, checkOptionTime, time, typeCalo, pageable ));
 
     }
 
