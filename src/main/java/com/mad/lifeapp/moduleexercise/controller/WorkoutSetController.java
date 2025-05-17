@@ -2,6 +2,7 @@ package com.mad.lifeapp.moduleexercise.controller;
 
 
 
+import com.mad.lifeapp.moduleexercise.dto.WorkoutSetUpdateDto;
 import com.mad.lifeapp.moduleexercise.entity.WorkoutSet;
 import com.mad.lifeapp.moduleexercise.service.WorkoutSetService;
 import lombok.RequiredArgsConstructor;
@@ -50,11 +51,11 @@ public class WorkoutSetController {
     @PutMapping("/{id}")
     public WorkoutSet update(
             @PathVariable Integer id,
-            @RequestBody WorkoutSet set,
+            @RequestBody WorkoutSetUpdateDto dto,
             @AuthenticationPrincipal Jwt jwt
     ) {
         Long userId = jwt.getClaim("user_id");
-        return service.updateForUser(id, set, userId);
+        return service.updateForUser(id, dto, userId);
     }
 
     // Delete set

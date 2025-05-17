@@ -34,20 +34,13 @@ public class SecurityConfig {
         http
                 .csrf(httpSecurityCsrfConfigurer -> httpSecurityCsrfConfigurer.disable())
                 .authorizeHttpRequests(request ->
-//<<<<<<< HEAD
-                        request
-//                                .requestMatchers(HttpMethod.POST,"/users/send").permitAll()
-//////=======
-//                                .requestMatchers(HttpMethod.POST, "/verifications/register/send").permitAll()
-////>>>>>>> 46f3c20343326addbd63e8ab1f8b495f29ea5ce 5
-//                                .requestMatchers(HttpMethod.POST,"/users/refresh-token").permitAll()
-//                                .requestMatchers(HttpMethod.POST,"/users/login").permitAll()
-//                                .requestMatchers(HttpMethod.POST,"/users/register").permitAll()
-//                                .requestMatchers(HttpMethod.POST,"/users/verification").permitAll()
-//                                .requestMatchers(HttpMethod.GET,"/users/*/email").permitAll()
-//                                .requestMatchers(HttpMethod.PUT,"/users/*/update-password").permitAll()
-//                                .requestMatchers(HttpMethod.POST,"verifications/send").permitAll()
-//                                .anyRequest().authenticated());
+
+                                request.requestMatchers(HttpMethod.GET,
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui.html",
+                                        "/swagger-ui/**",
+                                        "/webjars/**"
+                                ).permitAll()
                                 .anyRequest().permitAll());
         http.oauth2ResourceServer(oauth2 ->
                 oauth2.jwt(jwtConfigurer -> jwtConfigurer.decoder(jwtDecoder())));

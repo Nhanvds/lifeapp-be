@@ -29,4 +29,12 @@ public class UserHealthProfileController {
         return ResponseEntity.ok().body(userHealthProfileService.createUserHealthProfile(userHealthProfileRequest, token));
     }
 
+
+    @GetMapping("/detail")
+    public ResponseEntity<UserHealthProfileResponse> getUserHealthProfile(
+            @RequestHeader("Authorization") String token
+    ) throws ParserTokenException {
+        return ResponseEntity.ok().body(userHealthProfileService.getUserHealthProfile(token));
+    }
+
 }

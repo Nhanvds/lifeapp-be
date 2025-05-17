@@ -8,5 +8,5 @@ import com.mad.lifeapp.exception.UserNotFoundException;
 public interface UserHealthProfileService {
 
     UserHealthProfileResponse createUserHealthProfile(UserHealthProfileRequest userHealthProfileRequest, String token) throws ParserTokenException, UserNotFoundException;
-
+    UserHealthProfileResponse getUserHealthProfile(String token) throws ParserTokenException;
 }
