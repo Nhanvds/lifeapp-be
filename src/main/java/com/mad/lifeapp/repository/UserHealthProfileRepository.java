@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
@@ -24,15 +25,30 @@ public interface UserHealthProfileRepository extends JpaRepository<UserHealthPro
 
 
     /**
-     *
-     * @param userId
+     * @param userId id của user
      * @return Bản ghi mới nhất của user
      */
-    @Query("""
-                select u from UserHealthProfileEntity u
-                where u.user.id = :userId
-                order by u.createdAt desc
-            """)
+    @Query(value = """
+                SELECT * FROM user_health_profiles u
+                WHERE u.user_id = :userId
+                ORDER BY u.created_at DESC
+                LIMIT 1
+            """, nativeQuery = true)
     Optional<UserHealthProfileEntity> findLatestByUserId(@Param("userId") Long userId);
+
+
+    /**
+     * @param date   ngày cần lấy thông tin
+     * @param userId id của user
+     * @return Bản ghi mới nhất của user có thời gian tạo mới nhất <= date
+     */
+    @Query(value = """
+                SELECT * FROM user_health_profiles u
+                WHERE u.user_id = :userId AND u.created_at <= :date
+                ORDER BY u.created_at DESC
+                LIMIT 1
+            """, nativeQuery = true)
+    Optional<UserHealthProfileEntity> findLatestByUserIdAndDate(@Param("userId") Long userId, @Param("date") LocalDateTime date);
+
 
 }
