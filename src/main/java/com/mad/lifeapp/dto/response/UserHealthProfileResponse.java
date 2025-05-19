@@ -6,6 +6,9 @@ import com.mad.lifeapp.enums.UserGenderEnum;
 import lombok.Builder;
 import lombok.Data;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 public class UserHealthProfileResponse {
@@ -16,5 +19,6 @@ public class UserHealthProfileResponse {
     private GoalEnum goal;
     private ActivityLevelEnum activityLevel;
     private Float dailyCaloriesGoal;
-
+    private LocalDateTime createdAt;
+    private LocalDate queryDate;
 }
