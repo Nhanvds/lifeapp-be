@@ -1,8 +1,11 @@
 package com.mad.lifeapp.moduleexercise.service.impl;
 
 
+import com.mad.lifeapp.moduleexercise.dto.WorkoutProgramUpdateDto;
+import com.mad.lifeapp.moduleexercise.entity.WorkoutCategory;
 import com.mad.lifeapp.moduleexercise.entity.WorkoutProgram;
 import com.mad.lifeapp.moduleexercise.exception.ResourceNotFoundException;
+import com.mad.lifeapp.moduleexercise.repository.WorkoutCategoryRepository;
 import com.mad.lifeapp.moduleexercise.repository.WorkoutProgramRepository;
 import com.mad.lifeapp.moduleexercise.service.WorkoutProgramService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class WorkoutProgramServiceImpl implements WorkoutProgramService {
     private final WorkoutProgramRepository repository;
+    private final WorkoutCategoryRepository categoryRepository;
 
     @Override
     public List<WorkoutProgram> findAll() {
@@ -40,6 +44,25 @@ public class WorkoutProgramServiceImpl implements WorkoutProgramService {
         existing.setDuration(program.getDuration());
         existing.setImageUrl(program.getImageUrl());
         existing.setCategory(program.getCategory());
+        return repository.save(existing);
+    }
+
+    @Override
+    public WorkoutProgram partialUpdate(Integer id, WorkoutProgramUpdateDto dto) {
+        WorkoutProgram existing = findById(id);
+
+        if (dto.getName() != null) {
+            existing.setName(dto.getName());
+        }
+        if (dto.getImageUrl() != null) {
+            existing.setImageUrl(dto.getImageUrl());
+        }
+        if (dto.getCategoryId() != null) {
+            WorkoutCategory cat = categoryRepository.findById(dto.getCategoryId())
+                    .orElseThrow(() -> new ResourceNotFoundException(
+                            "Category not found with id " + dto.getCategoryId()));
+            existing.setCategory(cat);
+        }
         return repository.save(existing);
     }
 

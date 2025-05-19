@@ -19,10 +19,10 @@ public class WorkoutProgram {
     @Column(nullable = false)
     private String name;
 
-    @Column(name = "total_exercises", nullable = false)
+    @Column(name = "total_exercises")
     private Integer totalExercises;
 
-    @Column(name = "duration_string", nullable = false)
+    @Column(name = "duration_string")
     private String duration;
 
     @Column(name = "image_url", nullable = false)
