@@ -7,4 +7,5 @@ import com.mad.lifeapp.exception.ParserTokenException;
 public interface AchievementService {
 
     AchievementResponse createAchievement(String token, AchievementRequest achievementRequest) throws ParserTokenException;
+    String getAchievement(Long id);
 }

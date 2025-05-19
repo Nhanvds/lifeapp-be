@@ -12,8 +12,6 @@ import lombok.*;
 @Table(name = "achievements")
 public class AchievementEntity extends BaseEntity {
 
-    @Column(name = "title")
-    private String title;
 
     @Column(name = "description")
     private String description;

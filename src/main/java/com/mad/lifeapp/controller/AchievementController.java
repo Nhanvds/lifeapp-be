@@ -24,9 +24,6 @@ public class AchievementController {
 
     @GetMapping("/{achievement_id}")
     public String getAchievement(@PathVariable("achievement_id") Long id){
-        return  "</head><body>" +
-                "<h1>" + id + "</h1>" +
-                "<img src=\"" + "https://res.cloudinary.com/draknr12v/image/upload/v1747405175/eixxyrvxm0s5gb4qxonz.jpg" + "\" width=\"100%\"/>" +
-                "</body></html>";
+        return achievementService.getAchievement(id);
     }
 }
