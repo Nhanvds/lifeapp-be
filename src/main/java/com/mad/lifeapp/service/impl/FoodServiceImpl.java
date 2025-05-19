@@ -22,6 +22,8 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,9 +42,24 @@ public class FoodServiceImpl implements FoodService {
     private final IngredientMapper ingredientMapper;
     private final IngredientReponsitory ingredientReponsitory;
     private final FoodIngredientReponsitory foodIngredientReponsitory;
+
+    public Long getCurrentUserId() {
+        var auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.isAuthenticated()) {
+            throw new IllegalStateException("User is not authenticated");
+        }
+
+        Jwt jwt = (Jwt) auth.getPrincipal();
+
+
+
+        return (Long) jwt.getClaim("user_id");
+    }
+
     @Override
     public FoodResponse getFood(Long id) throws NotFoundException {
-        Optional<FoodEntity> foodEntity = foodReponsitory.findById(id);
+        Long idUser = getCurrentUserId();
+        Optional<FoodEntity> foodEntity = foodReponsitory.findById(idUser, id);
         if(foodEntity.isEmpty()) {
             throw new NotFoundException("Không tìm thấy Food");
         }
@@ -66,8 +83,9 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public List<FoodResponse> getFoods(){
+        Long idUser = getCurrentUserId();
 
-        List<FoodEntity> foodEntities = foodReponsitory.findAll();
+        List<FoodEntity> foodEntities = foodReponsitory.findByCreatedBy(idUser);
         List<FoodResponse> foodResponses = new ArrayList<>();
 
         foodEntities.forEach(foodEntity -> {
@@ -80,9 +98,11 @@ public class FoodServiceImpl implements FoodService {
     @Transactional
     @Override
     public Boolean addFood(FoodRequest foodRequest) throws InvalidException {
+        Long idUser = getCurrentUserId();
 
         try {
             FoodEntity food = foodMapper.toFood(foodRequest);
+            food.setCreatedBy(idUser);
             Set<IngredientReq> ingredientReqSet = foodRequest.getIngredients();
 
 
@@ -120,14 +140,17 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public FoodCategory getFoodCategorys(CategoryEnum category, Pageable pageable) {
+        Long idUser = getCurrentUserId();
+
+        System.out.println(idUser);
 
         Page<FoodEntity> foodEntityPage;
 
         if(category == CategoryEnum.All) {
-            foodEntityPage = foodReponsitory.findAllFood("", pageable);
+            foodEntityPage = foodReponsitory.findAllFood("", idUser, pageable);
         }
         else {
-            foodEntityPage = foodReponsitory.findByCategory(category, pageable);
+            foodEntityPage = foodReponsitory.findByCategoryAndCreatedBy(category, idUser, pageable);
         }
         Page<FoodResponse> foodResponsePage = foodEntityPage.map(foodMapper::toFoodResponse);
         FoodCategory foodCategory = FoodCategory.builder()
@@ -142,6 +165,9 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public FoodCategory findFood(String nameFood, String category,Integer checkOptionTime, Integer time, Integer typeCalo, Pageable pageable) {
+
+        Long idUser = getCurrentUserId();
+
         Page<FoodEntity> foodEntityPage;
 
         category = category.substring(0,1).toUpperCase() + category.substring(1).toLowerCase();
@@ -175,8 +201,8 @@ public class FoodServiceImpl implements FoodService {
         }
 
 
-        if(checkOptionTime == 1) foodEntityPage = foodReponsitory.findNameTime(nameFood, time,category, startCalo, endCalo,  pageable);
-        else foodEntityPage = foodReponsitory.findNameNoTime(nameFood, category, startCalo, endCalo,  pageable);
+        if(checkOptionTime == 1) foodEntityPage = foodReponsitory.findNameTime(nameFood, time,category, startCalo, endCalo,  idUser, pageable);
+        else foodEntityPage = foodReponsitory.findNameNoTime(nameFood, category, startCalo, endCalo, idUser, pageable);
 
         Page<FoodResponse> foodResponsePage = foodEntityPage.map(foodMapper::toFoodResponse);
         FoodCategory foodCategory = FoodCategory.builder()
