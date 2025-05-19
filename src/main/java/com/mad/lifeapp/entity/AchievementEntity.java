@@ -12,11 +12,12 @@ import lombok.*;
 @Table(name = "achievements")
 public class AchievementEntity extends BaseEntity {
 
-    @Column(name = "title", nullable = false)
-    private String title;
 
-    @Column(name = "description", nullable = false)
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "image_url")
+    private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
