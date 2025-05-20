@@ -8,13 +8,16 @@ import com.mad.lifeapp.dto.request.FirebaseTokenRequest;
 import com.mad.lifeapp.dto.request.PasswordRequest;
 import com.mad.lifeapp.dto.request.UserRequest;
 import com.mad.lifeapp.dto.response.TokenResponse;
+import com.mad.lifeapp.dto.response.UserProfileResponse;
 import com.mad.lifeapp.dto.response.UserResponse;
 import com.mad.lifeapp.entity.UserEntity;
+import com.mad.lifeapp.entity.UserHealthProfileEntity;
 import com.mad.lifeapp.entity.VerificationCodeEntity;
 import com.mad.lifeapp.enums.UserRoleEnum;
 import com.mad.lifeapp.enums.UserStatusEnum;
 import com.mad.lifeapp.exception.*;
 import com.mad.lifeapp.mapper.UserMapper;
+import com.mad.lifeapp.repository.UserHealthProfileRepository;
 import com.mad.lifeapp.repository.UserRepository;
 import com.mad.lifeapp.repository.VerificationCodeRepository;
 import com.mad.lifeapp.service.UserService;
@@ -34,6 +37,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final VerificationCodeRepository verificationCodeRepository;
+    private final UserHealthProfileRepository userHealthProfileRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final JwtUtils jwtUtils;
@@ -115,6 +119,23 @@ public class UserServiceImpl implements UserService {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return userMapper.toResponse(user);
+    }
+
+    @Override
+    public UserProfileResponse getUserProfile(String token) throws ParserTokenException, UserNotFoundException {
+        Long userId = jwtUtils.getUserId(token);
+        UserEntity user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
+        UserHealthProfileEntity userHealthProfileEntity = userHealthProfileRepository.findLatestByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy thông tin sức khỏe của người dùng"));
+        return UserProfileResponse.builder()
+                .id(user.getId())
+                .fullname(user.getFullname())
+                .imageUrl(user.getImageUrl())
+                .weight(userHealthProfileEntity.getWeight())
+                .height(userHealthProfileEntity.getHeight())
+                .age(userHealthProfileEntity.getAge())
+                .build();
     }
 
     @Override
