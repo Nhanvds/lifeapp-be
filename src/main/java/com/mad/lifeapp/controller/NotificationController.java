@@ -20,7 +20,7 @@ public class NotificationController {
         return ResponseEntity.ok(response);
     }
 
-    @PutMapping("/{userId}")
+    @PostMapping("/{userId}")
     public ResponseEntity<NotificationResponse> updateNotification(
             @PathVariable Long userId,
             @RequestBody NotificationRequest request) {
