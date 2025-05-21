@@ -1,6 +1,7 @@
 package com.mad.lifeapp.moduleexercise.controller;
 
 
+import com.mad.lifeapp.moduleexercise.dto.WorkoutProgramUpdateDto;
 import com.mad.lifeapp.moduleexercise.entity.WorkoutProgram;
 import com.mad.lifeapp.moduleexercise.service.WorkoutProgramService;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,14 @@ public class WorkoutProgramController {
     @PutMapping("/{id}")
     public WorkoutProgram update(@PathVariable Integer id, @RequestBody WorkoutProgram p) {
         return service.update(id, p);
+    }
+
+    @PatchMapping("/{id}")
+    public WorkoutProgram patch(
+            @PathVariable Integer id,
+            @RequestBody WorkoutProgramUpdateDto dto
+    ) {
+        return service.partialUpdate(id, dto);
     }
 
     @DeleteMapping("/{id}")

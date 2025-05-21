@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+
 @RestController
 @RequestMapping("/user-health-profiles")
 @RequiredArgsConstructor
@@ -27,6 +29,35 @@ public class UserHealthProfileController {
             @RequestBody UserHealthProfileRequest userHealthProfileRequest
     ) throws UserNotFoundException, ParserTokenException {
         return ResponseEntity.ok().body(userHealthProfileService.createUserHealthProfile(userHealthProfileRequest, token));
+    }
+
+
+    /**
+     *
+     * @param token
+     * @return lấy thông tin sức khỏe mới nhất
+     * @throws ParserTokenException
+     */
+    @GetMapping("/detail")
+    public ResponseEntity<UserHealthProfileResponse> getUserHealthProfile(
+            @RequestHeader("Authorization") String token
+    ) throws ParserTokenException {
+        return ResponseEntity.ok().body(userHealthProfileService.getUserHealthProfile(token));
+    }
+
+
+    /**
+     *
+     * @param token
+     * @return lấy thông tin sức khỏe theo ngày, nếu không có bản ghi của ngày này, trả về bản ghi của ngày gần nhất
+     * @throws ParserTokenException
+     */
+    @GetMapping("/detail-by-date")
+    public ResponseEntity<UserHealthProfileResponse> getUserHealthProfileByDate(
+            @RequestHeader("Authorization") String token,
+            @RequestParam("date")LocalDate date
+            ) throws ParserTokenException {
+        return ResponseEntity.ok().body(userHealthProfileService.getUserHealthProfileByDate(token,date));
     }
 
 }

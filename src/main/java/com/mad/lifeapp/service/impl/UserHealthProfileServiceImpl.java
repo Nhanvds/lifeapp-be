@@ -8,6 +8,7 @@ import com.mad.lifeapp.entity.UserEntity;
 import com.mad.lifeapp.entity.UserHealthProfileEntity;
 import com.mad.lifeapp.enums.UserGenderEnum;
 import com.mad.lifeapp.enums.UserStatusEnum;
+import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.exception.ParserTokenException;
 import com.mad.lifeapp.exception.UserNotFoundException;
 import com.mad.lifeapp.repository.INotificationRepository;
@@ -17,6 +18,7 @@ import com.mad.lifeapp.service.UserHealthProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -60,9 +62,47 @@ public class UserHealthProfileServiceImpl implements UserHealthProfileService {
                 .weight(userHealthProfileEntity.getWeight())
                 .activityLevel(userHealthProfileEntity.getActivityLevel())
                 .dailyCaloriesGoal(userHealthProfileEntity.getDailyCaloriesGoal())
+                .createdAt(userHealthProfileEntity.getCreatedAt())
+                .queryDate(LocalDate.now())
                 .build();
     }
 
+    @Override
+    public UserHealthProfileResponse getUserHealthProfile(String token) throws ParserTokenException {
+        Long userId = jwtUtils.getUserId(token);
+        UserHealthProfileEntity userHealthProfileEntity = userHealthProfileRepository.findLatestByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy thông tin sức khỏe của người dùng"));
+        return UserHealthProfileResponse.builder()
+                .age(userHealthProfileEntity.getAge())
+                .gender(userHealthProfileEntity.getGender())
+                .goal(userHealthProfileEntity.getGoal())
+                .height(userHealthProfileEntity.getHeight())
+                .weight(userHealthProfileEntity.getWeight())
+                .activityLevel(userHealthProfileEntity.getActivityLevel())
+                .dailyCaloriesGoal(userHealthProfileEntity.getDailyCaloriesGoal())
+                .createdAt(userHealthProfileEntity.getCreatedAt())
+                .queryDate(LocalDate.now())
+                .build();
+    }
+
+    @Override
+    public UserHealthProfileResponse getUserHealthProfileByDate(String token, LocalDate date) throws ParserTokenException {
+        Long userId = jwtUtils.getUserId(token);
+        LocalDateTime endOfDay = date.atTime(LocalTime.MAX);
+        UserHealthProfileEntity userHealthProfileEntity = userHealthProfileRepository.findLatestByUserIdAndDate(userId, endOfDay)
+                .orElseThrow(() -> new NotFoundException("Không tìm thấy thông tin sức khỏe của người dùng"));
+        return UserHealthProfileResponse.builder()
+                .age(userHealthProfileEntity.getAge())
+                .gender(userHealthProfileEntity.getGender())
+                .goal(userHealthProfileEntity.getGoal())
+                .height(userHealthProfileEntity.getHeight())
+                .weight(userHealthProfileEntity.getWeight())
+                .activityLevel(userHealthProfileEntity.getActivityLevel())
+                .dailyCaloriesGoal(userHealthProfileEntity.getDailyCaloriesGoal())
+                .createdAt(userHealthProfileEntity.getCreatedAt())
+                .queryDate(date)
+                .build();
+    }
 
     public void calculateDailyCalories(UserHealthProfileEntity profile) {
         if (profile == null) {

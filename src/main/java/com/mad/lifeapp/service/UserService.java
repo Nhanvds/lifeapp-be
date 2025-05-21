@@ -5,6 +5,7 @@ import com.mad.lifeapp.dto.request.FirebaseTokenRequest;
 import com.mad.lifeapp.dto.request.PasswordRequest;
 import com.mad.lifeapp.dto.request.UserRequest;
 import com.mad.lifeapp.dto.response.TokenResponse;
+import com.mad.lifeapp.dto.response.UserProfileResponse;
 import com.mad.lifeapp.dto.response.UserResponse;
 import com.mad.lifeapp.exception.*;
 import com.nimbusds.jose.JOSEException;
@@ -22,4 +23,6 @@ public interface UserService {
     boolean resetPassword(String token, PasswordRequest passwordRequest) throws ParserTokenException, UserNotFoundException;
 
     UserResponse getUser(String token) throws ParserTokenException;
+
+    UserProfileResponse getUserProfile(String token) throws ParserTokenException, UserNotFoundException;
 }

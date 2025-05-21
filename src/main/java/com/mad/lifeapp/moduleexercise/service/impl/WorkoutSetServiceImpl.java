@@ -1,6 +1,7 @@
 package com.mad.lifeapp.moduleexercise.service.impl;
 
 
+import com.mad.lifeapp.moduleexercise.dto.WorkoutSetUpdateDto;
 import com.mad.lifeapp.moduleexercise.entity.WorkoutSet;
 import com.mad.lifeapp.moduleexercise.exception.ResourceNotFoundException;
 import com.mad.lifeapp.moduleexercise.repository.WorkoutSetRepository;
@@ -33,14 +34,13 @@ public class WorkoutSetServiceImpl implements WorkoutSetService {
         return repository.save(set);
     }
 
-    @Override
-    public WorkoutSet updateForUser(Integer id, WorkoutSet set, Long userId) {
+    public WorkoutSet updateForUser(Integer id, WorkoutSetUpdateDto dto, Long userId) {
         WorkoutSet existing = findByIdForUser(id, userId);
-        existing.setName(set.getName());
-        existing.setStartTime(set.getStartTime());
-        existing.setEndTime(set.getEndTime());
-        existing.setCurrentExerciseIndex(set.getCurrentExerciseIndex());
-        existing.setProgram(set.getProgram());
+
+        // CHỈ ghi đè 2 trường thay đổi
+        existing.setCurrentExerciseIndex(dto.getCurrentExerciseIndex());
+        existing.setEndTime(dto.getEndTime());
+
         return repository.save(existing);
     }
 
