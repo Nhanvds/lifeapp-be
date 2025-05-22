@@ -9,7 +9,7 @@ import com.mad.lifeapp.exception.InvalidException;
 import com.mad.lifeapp.exception.NotFoundException;
 import com.mad.lifeapp.service.FileService;
 import com.mad.lifeapp.service.FoodService;
-import com.mad.lifeapp.service.NoteFoodService;
+//import com.mad.lifeapp.service.NoteFoodService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -27,17 +27,22 @@ public class FoodController {
 
     private final FoodService foodService;
     private final FileService fileService;
-    private final NoteFoodService noteFoodService;
+//    private final NoteFoodService noteFoodService;
 
 
-    @PostMapping("/addNote")
-    public ResponseEntity<Boolean> addNote(@RequestParam("idUser") Long idUser, @RequestParam("idFood") Long idFood, @RequestParam("note") String note){
-        return ResponseEntity.ok().body( noteFoodService.createNoteFood(idUser, idFood, note));
-    }
+//    @PostMapping("/addNote")
+//    public ResponseEntity<Boolean> addNote(@RequestParam("idUser") Long idUser, @RequestParam("idFood") Long idFood, @RequestParam("note") String note){
+//        return ResponseEntity.ok().body( noteFoodService.createNoteFood(idUser, idFood, note));
+//    }
     @GetMapping("/food")
     public ResponseEntity<?> getFood(@RequestParam(name = "id")Long id) throws NotFoundException {
         FoodResponse food = foodService.getFood(id);
         return ResponseEntity.ok().body(food);
+    }
+
+    @GetMapping("/get-suggest")
+    public ResponseEntity<List<FoodResponse>> getFoodSuggest(@RequestParam(name = "category") String category,@RequestParam(name = "target") Float target){
+        return ResponseEntity.ok().body(foodService.getSuggests(category, target));
     }
 
     @GetMapping("/food-category")
@@ -61,17 +66,31 @@ public class FoodController {
     }
 
     @PostMapping("/add-food")
-    public ResponseEntity<Boolean> addFodd (@RequestBody FoodRequest foodRequest) throws InvalidException {
+    public ResponseEntity<Boolean> addFood (@RequestBody FoodRequest foodRequest) throws InvalidException {
 ////        log.info("Name : ", foodRequest.getName());
 //        log.info(foodRequest.toString() + null);
         Boolean checkAdd = foodService.addFood(foodRequest);
         return ResponseEntity.ok().body(checkAdd);
     }
 
+    @PostMapping("/add-foods")
+    public ResponseEntity<Boolean> addFoods (@RequestBody List<FoodRequest> foodRequests) throws InvalidException {
+////        log.info("Name : ", foodRequest.getName());
+//        log.info(foodRequest.toString() + null);
+        Boolean checkAdd = foodService.addFoods(foodRequests);
+        return ResponseEntity.ok().body(checkAdd);
+    }
     @GetMapping("/foods")
     public ResponseEntity<?> getFoods(){
         return ResponseEntity.ok().body(foodService.getFoods());
     }
+
+    @PostMapping("/update-food")
+    public ResponseEntity<Boolean> updateFood(@RequestParam("id") Long id, @RequestParam("note") String note){
+
+        return ResponseEntity.ok().body(foodService.updateFood(id, note));
+    }
+
 
     @PostMapping("/upload")
     public ResponseEntity<String> uploadImage(@RequestParam("files") List<MultipartFile> images) {

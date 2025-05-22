@@ -47,10 +47,10 @@ public class FoodEntity extends BaseEntity {
     private Long createdBy;
 
     @OneToMany(mappedBy = "food",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private Set<NoteFoodEntity> noteFoods;
+    private Set<FoodIngredientEntity> foodIngredients;
 
     @OneToMany(mappedBy = "food",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-    private Set<FoodIngredientEntity> foodIngredients;
+    private Set<NoteFoodEntity> noteFoods;
 
     @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Set<DailyMenuFoodEntity> dailyMenuFoods;

@@ -10,15 +10,24 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Transactional
 public interface FoodReponsitory extends JpaRepository<FoodEntity, Long> {
 
-
-    Page<FoodEntity> findByCategoryAndCreatedBy(CategoryEnum category, Long idUer, Pageable pageable);
+    @Query("""
+    select foods from FoodEntity as foods 
+    where 
+      CAST(foods.category AS string) like %:category%
+      and (foods.createdBy = 0 or foods.createdBy = :idUser)
+""")
+    Page<FoodEntity> findByCategoryAndCreatedByOrCreatedBy(
+            @Param("category") String category,
+            @Param("idUser") Long idUser, Pageable pageable);
 
     @Query("""
     select foods from FoodEntity as foods 
@@ -65,6 +74,10 @@ public interface FoodReponsitory extends JpaRepository<FoodEntity, Long> {
 
 
     List<FoodEntity> findByCreatedBy(Long idUser);
+
+
+    @Query("select food from FoodEntity food where  CAST( food.category as string ) like %:category% ")
+    List<FoodEntity> findByCategory(String category);
 
 
 }

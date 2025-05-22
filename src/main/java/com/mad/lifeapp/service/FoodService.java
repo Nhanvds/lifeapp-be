@@ -16,9 +16,15 @@ public interface FoodService {
     List<FoodResponse> getFoods();
     FoodCategory getFoodCategorys (CategoryEnum category, Pageable pageable);
 
-    Boolean updateFood(FoodRequest foodRequest, Long id);
+    Boolean updateFood(Long id, String note);
     Boolean deleteFood(Long id);
     Boolean addFood(FoodRequest foodRequest) throws InvalidException;
     FoodCategory findFood(String nameFood, String nameCategory, Integer checkOptionTime, Integer time, Integer typeCalo, Pageable pageable);
+
+    Boolean addFoods(List<FoodRequest> foodRequests) throws InvalidException;
+
+
+    List<FoodResponse> getSuggests(String category, Float target);
+
 
 }

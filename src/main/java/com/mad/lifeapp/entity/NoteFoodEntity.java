@@ -13,7 +13,7 @@ import lombok.*;
 @Table(name = "note_foods")
 public class NoteFoodEntity extends BaseEntity{
     @Column(name = "note")
-    private String note;
+    private String note = "";
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

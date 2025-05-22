@@ -1,6 +1,7 @@
 package com.mad.lifeapp.controller;
 
 
+import com.mad.lifeapp.dto.request.DailyReq;
 import com.mad.lifeapp.dto.response.DailyRes;
 import com.mad.lifeapp.service.DailyService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @RestController()
-@RequestMapping("/dailys")
+@RequestMapping("/dailies")
 @RequiredArgsConstructor
 public class DailyController {
 
@@ -32,7 +33,15 @@ public class DailyController {
     }
 
     @PostMapping("/delete-food-daily")
-    ResponseEntity<Boolean> updateDaily(@RequestBody List<Long> idFoods, @RequestParam String note, @RequestParam Long id){
-        return ResponseEntity.ok().body(dailyService.updateDaily(idFoods, note, id));
+    ResponseEntity<Boolean> updateDaily(@RequestBody List<Long> idDeleteFoods, @RequestParam String note, @RequestParam Long id){
+        return ResponseEntity.ok().body(dailyService.updateDaily(idDeleteFoods, note, id));
     }
+
+    @PostMapping("/apply-daily-suggest")
+    ResponseEntity<DailyRes> updateDailySuggest(@RequestBody DailyReq dailyReq){
+        return ResponseEntity.ok().body(dailyService.applyDailySuggest(dailyReq));
+
+    }
+
+
 }

@@ -7,9 +7,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 
 
 @Repository
@@ -17,7 +14,11 @@ import java.time.LocalDate;
 public interface DailyMenuFoodReponsitory extends JpaRepository<DailyMenuFoodEntity, Long> {
 
     @Modifying
-    @Query("delete from DailyMenuFoodEntity daily_food where daily_food.id = :id")
-    void deleteById(@Param("id") Long id);
+    @Query("DELETE from DailyMenuFoodEntity daily_menu_food where daily_menu_food.id = :idDailyMenuFood")
+    void deleteByIdDailyMenuFood(@Param("idDailyMenuFood") Long idDailyMenuFood);
+
+
+    @Modifying
+    void deleteByDailyMenuEntity(DailyMenuEntity dailyMenuEntity);
 
 }

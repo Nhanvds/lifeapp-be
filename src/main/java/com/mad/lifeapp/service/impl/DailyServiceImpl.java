@@ -1,6 +1,7 @@
 package com.mad.lifeapp.service.impl;
 
 import com.mad.lifeapp.component.JwtUtils;
+import com.mad.lifeapp.dto.request.DailyReq;
 import com.mad.lifeapp.dto.response.DailyMenuFoodRes;
 import com.mad.lifeapp.dto.response.DailyRes;
 import com.mad.lifeapp.dto.response.FoodResponse;
@@ -16,8 +17,8 @@ import com.mad.lifeapp.repository.UserRepository;
 import com.mad.lifeapp.service.DailyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.*;
@@ -25,6 +26,7 @@ import java.util.*;
 import static java.rmi.server.LogStream.log;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class DailyServiceImpl implements DailyService {
@@ -114,10 +116,11 @@ public class DailyServiceImpl implements DailyService {
     }
 
     @Override
-    public Boolean updateDaily(List<Long> idFoods, String note, Long id) {
+    public Boolean updateDaily(List<Long> idDeleteFoods, String note, Long id) {
         try {
-            idFoods.forEach(item -> {
-                dailyMenuFoodReponsitory.deleteById(item);
+            idDeleteFoods.forEach(item -> {
+                DailyMenuFoodEntity dailyMenuFoodEntity = dailyMenuFoodReponsitory.findById(item).orElseThrow(() ->new RuntimeException("Khong tim thay food"));
+                dailyMenuFoodReponsitory.deleteByIdDailyMenuFood(dailyMenuFoodEntity.getId());
                 System.out.println(dailyMenuFoodReponsitory.findById(item));
 
             });
@@ -126,8 +129,65 @@ public class DailyServiceImpl implements DailyService {
             dailyMenuEntity.setNote(note);
             dailyReponsitory.save(dailyMenuEntity);
         }catch (Exception e){
-            throw new RuntimeException("Update DailyMenuFood khong thanh cong");
+            throw new RuntimeException("Update DailyMenuFood khong thanh cong: " + e.getMessage());
         }
         return true;
+    }
+
+    @Override
+    public DailyRes applyDailySuggest(DailyReq dailyReq) {
+        Long id = dailyReq.getId();
+
+
+
+        DailyMenuEntity dailyMenuEntity = dailyReponsitory.findById(id).orElseThrow(() -> new RuntimeException("Khong tim duoc daily"));
+        dailyMenuFoodReponsitory.deleteByDailyMenuEntity(dailyMenuEntity);
+        dailyMenuEntity.setNote(dailyReq.getNote());
+        Set<DailyMenuFoodEntity> dailyMenuFoodEntities = new HashSet<>();
+
+        if(!dailyReq.getDailyMenuFoodDTO().isEmpty()) {
+            dailyReq.getDailyMenuFoodDTO().forEach(item -> {
+                FoodEntity food = foodReponsitory.findById(item.getFood().getId()).orElseThrow(() -> new RuntimeException("Khong tim duoc food"));
+                DailyMenuFoodEntity dailyMenuFoodEntity = dailyMenuFoodReponsitory.save(DailyMenuFoodEntity.builder()
+                        .food(food)
+                        .category(item.getCategory())
+                        .dailyMenuEntity(dailyMenuEntity)
+                        .build());
+
+                dailyMenuFoodEntities.add(dailyMenuFoodEntity);
+            });
+        }
+
+        dailyMenuEntity.setDailyMenuFoods(dailyMenuFoodEntities);
+
+        dailyReponsitory.save(dailyMenuEntity);
+
+        Set<DailyMenuFoodRes> dailyMenuFoodResSet = new HashSet<>();
+        for(DailyMenuFoodEntity dailyMenuFoodRes : dailyMenuEntity.getDailyMenuFoods()){
+            FoodEntity food = dailyMenuFoodRes.getFood();
+            FoodResponse foodResponse = foodMapper.toFoodResponse(food);
+            Set<IngredientRes> ingredientResSet = new HashSet<>();
+
+            for(FoodIngredientEntity foodIngredientEntity : food.getFoodIngredients()){
+                IngredientRes ingredientRes = ingredientMapper.toIngredientRes(foodIngredientEntity.getIngredient());
+                ingredientRes.setGram(foodIngredientEntity.getGram());
+            }
+            foodResponse.setIngredients(ingredientResSet);
+            dailyMenuFoodResSet.add(DailyMenuFoodRes.builder()
+                    .id(dailyMenuFoodRes.getId())
+                    .food(foodResponse)
+                    .category(dailyMenuFoodRes.getCategory())
+                    .build());
+        }
+
+        DailyRes dailyRes = DailyRes.builder()
+                .note(dailyMenuEntity.getNote())
+                .dailyMenuFoodDTO(dailyMenuFoodResSet)
+                .id(id)
+                .build();
+        return dailyRes;
+
+
+
     }
 }

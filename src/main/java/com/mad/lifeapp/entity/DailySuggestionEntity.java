@@ -17,7 +17,7 @@ public class DailySuggestionEntity extends BaseEntity{
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "dailySuggestions", nullable = false)
+    @JoinColumn(name = "userHealthProfileEntity_id", nullable = false)
     private UserHealthProfileEntity userHealthProfiles;
 
 
